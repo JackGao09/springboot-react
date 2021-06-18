@@ -9,7 +9,7 @@ import javax.persistence.Table;
 public class Client {
     @Id
     @GeneratedValue
-    private Long id;
+    private int id;
     private String name;
     private String email;
 
@@ -21,17 +21,17 @@ public class Client {
         this.email = email;
     }
 
-    public Client(Long id, String name, String email) {
+    public Client(int id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

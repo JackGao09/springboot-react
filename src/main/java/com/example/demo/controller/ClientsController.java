@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Client;
 import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.JdbcClientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,19 +15,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/clients")
 public class ClientsController {
+    @Qualifier("namedParamJdbcClientRepository")
+    @Autowired
     private final ClientRepository clientRepository;
 
-    public ClientsController(ClientRepository clientRepository) {
+    public ClientsController(@Qualifier("namedParamJdbcClientRepository") ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
-    @GetMapping("clients")
+    @GetMapping
     public List<Client> getClients() {
         return this.clientRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Client getClient(@PathVariable Long id) {
+    public Client getClient(@PathVariable int id) {
         return clientRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
@@ -35,17 +40,17 @@ public class ClientsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateClient(@PathVariable Long id, @RequestBody Client client) {
+    public ResponseEntity updateClient(@PathVariable int id, @RequestBody Client client) {
         Client currentClient = clientRepository.findById(id).orElseThrow(RuntimeException::new);
         currentClient.setName(client.getName());
         currentClient.setEmail(client.getEmail());
-        currentClient = clientRepository.save(client);
+        currentClient = clientRepository.update(client);
 
         return ResponseEntity.ok(currentClient);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteClient(@PathVariable Long id) {
+    public ResponseEntity deleteClient(@PathVariable int id) {
         clientRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
